@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, of } from 'rxjs';
 import { User } from '../_models/user.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BACKEND_URL } from '../_common/app.config';
@@ -24,14 +24,10 @@ export class AuthService {
 
         const options = { headers: new HttpHeaders({'Content-Type' : 'application/json'})};
 
-        const user: User = {username};
+        const user: User = {username, token: 'asdasdasda'};
+        localStorage.setItem('user', JSON.stringify(user));
 
-        return this.http.post(this.backendUrl + '/auth/login', { username, password}, options)
-            .pipe(catchError(this.handleError<User>('login')))
-            .pipe(map((res: any) => {
-                user.token = res.token;
-                return user;
-            }));
+        return of(user);
     }
 
     getUser(): User | null {
