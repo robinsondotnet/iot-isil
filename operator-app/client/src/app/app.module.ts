@@ -21,6 +21,9 @@ import { AuthGuard } from './_guards';
 import { AuthModule } from './auth/auth.module';
 import { BACKEND_URL } from './_common/app.config';
 
+import { AngularFireModule } from 'angularfire2';
+import { environment } from '../environments/environment';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,6 +34,7 @@ import { BACKEND_URL } from './_common/app.config';
   ],
   imports: [
     BrowserModule,
+    AngularFireModule.initializeApp(environment.firebase),
     HttpClientModule,
     RouterModule.forRoot(([
       { path: '', redirectTo: 'device', pathMatch: 'full'},

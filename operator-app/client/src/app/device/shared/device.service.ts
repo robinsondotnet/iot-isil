@@ -3,15 +3,16 @@ import { of, Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Device } from '../../_models/device.model';
+import { AngularFirestore } from 'angularfire2/firestore';
 
 @Injectable()
 export class DeviceService {
-    constructor(private http: HttpClient) {
+    constructor(private db: AngularFirestore) {
 
     }
 
     getDevices(): Observable<Device[]> {
-        return of(DEVICES);
+        return this.db.collection<Device>('services').valueChanges();
     }
 
     getDevice(id: number): Observable<Device> {
