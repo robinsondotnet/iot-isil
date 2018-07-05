@@ -1,39 +1,63 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO.Ports;
+using RJCP.IO.Ports;
 
 namespace pi_client
 {
     class Program
     {
         static void Main(string[] args)
-        {
-            Console.WriteLine("Hello Serial port!");
-            var ports = SerialDevice.GetPortNames();
-            bool isTTY = false;
-            foreach (var prt in ports)
-            {
-                Console.WriteLine($"Serial name: {prt}");
-                if (prt.Contains("ttyS0"))
+    {
+        SerialPortStream myPort = null;
+        Console.WriteLine("Hello Serial!");
+        Console.WriteLine(Environment.Version.ToString());
+        string[] ports = GetPortNames();
+        myPort = new SerialPortStream("/dev/ttyACM0", 9600, 8, Parity.None, StopBits.One);
+        myPort.Open();
+                if (!myPort.IsOpen)
                 {
-                    isTTY = true;
+                    Console.WriteLine("Error opening serial port");
+                    return;
                 }
-            }
-            if (!isTTY)
-            {
-                Console.WriteLine("No ttyS0 serial port!");
-                return;
-            }
-            Console.WriteLine("Yes, we have the embedded serial port available, opening it");
-            SerialDevice mySer = new SerialDevice("/dev/ttyACM0", BaudRate.B9600);
-            mySer.DataReceived += MySer_DataReceived;
-            mySer.Open();
-            while (!Console.KeyAvailable)
-                ;
-            mySer.Close();
-        }
-        private static void MySer_DataReceived(object arg1, byte[] arg2)
+                Console.WriteLine("Port open");
+        myPort.Handshake = Handshake.None;
+        myPort.ReadTimeout = 10000;
+        myPort.NewLine = "\r\n";
+
+        while (!Console.KeyAvailable)
         {
-            Console.WriteLine($"Received: {System.Text.Encoding.UTF8.GetString(arg2)}");
+            try
+            {
+                string readed = myPort.ReadLine();
+                Console.WriteLine(readed);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+
         }
     }
+    public static string[] GetPortNames()
+    {
+        int p = (int)Environment.OSVersion.Platform;
+        List<string> serial_ports = new List<string>();
+
+        // Are we on Unix?
+        if (p == 4 || p == 128 || p == 6)
+        {
+            string[] ttys = System.IO.Directory.GetFiles("/dev/", "tty\\*");
+            foreach (string dev in ttys)
+            {
+                if (dev.StartsWith("/dev/ttyS") || dev.StartsWith("/dev/ttyUSB") || dev.StartsWith("/dev/ttyACM") || dev.StartsWith("/dev/ttyAMA"))
+                {
+                    serial_ports.Add(dev);
+                    Console.WriteLine("Serial list: {0}", dev);
+                }
+            }
+        }
+        return serial_ports.ToArray();
+    }
+}
 }
