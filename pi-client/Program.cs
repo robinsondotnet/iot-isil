@@ -24,7 +24,7 @@ namespace pi_client
                 return;
             }
             Console.WriteLine("Yes, we have the embedded serial port available, opening it");
-            SerialDevice mySer = new SerialDevice("/dev/ttyS0", BaudRate.B1152000);
+            SerialDevice mySer = new SerialDevice("/dev/ttyACM0", BaudRate.B9600);
             mySer.DataReceived += MySer_DataReceived;
             mySer.Open();
             while (!Console.KeyAvailable)
