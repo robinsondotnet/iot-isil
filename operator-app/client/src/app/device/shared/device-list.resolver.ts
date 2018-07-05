@@ -11,7 +11,12 @@ export class DeviceListResolver implements Resolve<any> {
     }
 
     resolve() {
-        return this.deviceService.getDevices().pipe(map(devices => devices));
+        console.log('before resolving');
+        return this.deviceService.getDevices().pipe(map(devices => {
+            console.log('devices');
+            console.log(devices);
+            return devices
+        }));
     }
 }
 

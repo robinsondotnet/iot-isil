@@ -22,6 +22,7 @@ import { AuthModule } from './auth/auth.module';
 import { BACKEND_URL } from './_common/app.config';
 
 import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { environment } from '../environments/environment';
 
 @NgModule({
@@ -35,10 +36,11 @@ import { environment } from '../environments/environment';
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule,
     HttpClientModule,
     RouterModule.forRoot(([
       { path: '', redirectTo: 'device', pathMatch: 'full'},
-      { path: 'device', component: DeviceListComponent, resolve: { devices: DeviceListResolver }, canActivate: [AuthGuard] },
+      { path: 'device', component: DeviceListComponent,  canActivate: [AuthGuard] },
       { path: 'device/:id', component: DeviceDetailComponent, resolve: {device: DeviceResolver}, canActivate: [AuthGuard] },
       { path: 'service', component: DeviceListComponent, resolve: {devices: DeviceListResolver}, canActivate: [AuthGuard] },
       { path: 'car', component: DeviceListComponent, resolve: { devices: DeviceListResolver}, canActivate: [AuthGuard]},

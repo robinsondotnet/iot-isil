@@ -6,9 +6,8 @@ import { Device } from '../../_models/device.model';
   template: `
   <div class="card">
     <div class="card-body">
-        <h5>{{ device.type }} #{{device.uniqueId}}</h5>
-        <p class="card-text"><b>Location:</b> {{device.location}}</p>
-        <a [routerLink]="['/device', device.id]" class="btn btn-primary">View Status</a>
+        <h5>Device: {{ device.id }} </h5>
+        <p class="card-text"><b>IsUsed:</b> {{ device.isUsed }} </p>
     </div>
   </div>
   `
